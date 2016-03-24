@@ -1,7 +1,7 @@
 一、在 Windows 上安装 SQLite
 
 
-1.请访问 SQLite 下载页面，从 Windows 区下载预编译的二进制文件。
+1.请访问 SQLite 下载页面http://www.sqlite.org/download.html，从 Windows 区下载预编译的二进制文件。
 
 2.您需要下载 sqlite-shell-win32-*.zip 和 sqlite-dll-win32-*.zip 压缩文件。
 
