@@ -18,7 +18,7 @@ Resultptr addptr, tempptr;
 /* 剩余工作：完成系统时间类 */
 
 /* Defination of class Result_Obtainer */
-result_obtainer::result_obtainer(string st, int e_t, string tl, string choice)
+result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
 {
     this->start = st;
     this->earliest_time = e_t;
@@ -26,7 +26,7 @@ result_obtainer::result_obtainer(string st, int e_t, string tl, string choice)
     this->all_result = NULL;
     if (choice == "price") {
         this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, ARRIVAL_TIME, DURATION, MIN(PRICE) "
-        
+
         "FROM " + tool + "_INFO "
         
         "WHERE START = '" + start + "' "

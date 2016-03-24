@@ -31,7 +31,7 @@ private:
     
 public:
     Resultptr all_result;           //Results start from all_result->nextptr    
-    result_obtainer(string, int, string, string);
+    result_obtainer(string, int, string, string tl = "ALL");
     void Get_Result();
 };
 

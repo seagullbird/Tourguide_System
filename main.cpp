@@ -14,7 +14,7 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    result_obtainer ob("CHENGDU", 700, "FLIGHT", "time");
+    result_obtainer ob("CHENGDU", 700, "time");
     ob.Get_Result();
     printlist(ob.all_result->nextptr);
     
