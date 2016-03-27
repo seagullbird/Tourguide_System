@@ -18,5 +18,6 @@ using namespace std;
 
 string int_to_string(int);
 
-void printlist(Resultptr &head);
+
+
 #endif /* Small_Funs_hpp */

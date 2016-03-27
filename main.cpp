@@ -16,7 +16,14 @@ using namespace std;
 int main(int argc, const char * argv[]) {
     result_obtainer ob("CHENGDU", 700, "time");
     ob.Get_Result();
-    printlist(ob.all_result->nextptr);
     
+    for(auto &x : ob.Result_list)
+    {
+        cout << x.first << endl;
+        for(auto &y : x.second)
+        {
+            cout << y.first << " == " << y.second << endl;
+        }
+    }
     return 0;
 }

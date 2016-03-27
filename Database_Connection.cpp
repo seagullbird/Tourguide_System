@@ -11,8 +11,9 @@
 using namespace std;
 
 
-Resultptr addptr, tempptr;
 
+
+map_row *add_map_row;
 
 //目前功能：查询从start城市（大写全拼）到所有与之直接相连的城市，earliest_time（无冒号）之后价格最低(price)或者到达时间最早(time)的交通工具tool的所有信息
 /* 剩余工作：完成系统时间类 */
@@ -20,39 +21,27 @@ Resultptr addptr, tempptr;
 /* Defination of class Result_Obtainer */
 result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
 {
+    //构造函数
     this->start = st;
     this->earliest_time = e_t;
     this->tool = tl;
-    this->all_result = NULL;
     if (choice == "price") {
-        this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, ARRIVAL_TIME, DURATION, MIN(PRICE) "
-
+        this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, ARRIVAL_TIME, DURATION, MIN(PRICE) AS PRICE "
         "FROM " + tool + "_INFO "
-        
         "WHERE START = '" + start + "' "
-        
         "AND NUMBER IN "
-        
         "(SELECT NUMBER FROM " + tool + "_INFO "
-        
         "WHERE DEPARTURE_TIME > " + int_to_string(earliest_time) + ") "
-        
         "GROUP BY END; ";
     }
     else if(choice == "time")
     {
-        this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, MIN(ARRIVAL_TIME), DURATION, PRICE "
-        
+        this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, MIN(ARRIVAL_TIME) AS ARRIVAL_TIME, DURATION, PRICE "
         "FROM " + tool + "_INFO "
-        
         "WHERE START = '" + start + "' "
-        
         "AND NUMBER IN "
-        
         "(SELECT NUMBER FROM " + tool + "_INFO "
-        
         "WHERE DEPARTURE_TIME > " + int_to_string(earliest_time) + ") "
-        
         "GROUP BY END; ";
     }
     else
@@ -64,8 +53,7 @@ result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
 
 void result_obtainer::Get_Result()
 {
-    all_result = new result;
-    addptr = all_result;
+    map_table *map_ptr = &Result_list;
     sqlite3 *db;
     int rc;
     char *zErrMsg = 0;
@@ -81,7 +69,7 @@ void result_obtainer::Get_Result()
     sql = pre_sql.c_str();
     
     /* Execute SQL statement */
-    rc = sqlite3_exec(db, sql, callback, NULL, &zErrMsg);
+    rc = sqlite3_exec(db, sql, callback, (void*)map_ptr, &zErrMsg);
     if( rc != SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
@@ -93,13 +81,17 @@ void result_obtainer::Get_Result()
 
 /* ----------------------------------- */
 
-int callback(void *data, int argc, char **argv, char **){
+int callback(void *map_ptr, int argc, char **argv, char ** azColName){
     //This function returns only one row of records each time itazColName is called
-    tempptr = new result;
-    addptr->nextptr = tempptr;
-    addptr = tempptr;
-    for(int i=0; i<argc; i++)
-        tempptr->row[i] = argv[i];
+    
+    static int Row_num = 1;
+    map_table *temp_map_ptr = (map_table *)map_ptr;
+    
+    for(int i=0; i<argc; i++) {
+        string temp_id(azColName[i]), temp_name(argv[i]);
+        (*temp_map_ptr)[Row_num][temp_id] = temp_name;
+    }
+    Row_num++;
     return 0;
 }
 

@@ -11,16 +11,15 @@
 #define NUMBER_OF_INFO 8
 #include <iostream>
 #include <string>
+#include <map>
 #include "sqlite3.h"
 using namespace std;
-
 /* INFO include: NUMBER, START, END, METHOD, DEPARTURE_TIME, ARRIVAL_TIME, DURATION, PRICE 8*/
 /* tool farmat: "CAR", "TRAIN", "FLIGHT" */
-typedef struct result
-{
-    string row[NUMBER_OF_INFO];
-    struct result *nextptr;
-}*Resultptr;
+
+typedef map<string, string> map_row;
+typedef map<int , map_row> map_table;
+
 
 class result_obtainer {
 private:
@@ -30,7 +29,7 @@ private:
     string tool;
     
 public:
-    Resultptr all_result;           //Results start from all_result->nextptr    
+    map_table Result_list;  
     result_obtainer(string, int, string, string tl = "ALL");
     void Get_Result();
 };
