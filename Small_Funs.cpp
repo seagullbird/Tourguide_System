@@ -18,3 +18,15 @@ string int_to_string(int a)
     return b;
 }
 
+void print_map_table(map_table &table)
+{
+    for(auto &x : table)
+    {
+        cout << x.first << endl;
+        for(auto &y : x.second)
+        {
+            cout << y.first << " == " << y.second << endl;
+        }
+        cout << endl;
+    }
+}

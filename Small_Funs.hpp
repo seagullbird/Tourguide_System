@@ -18,6 +18,6 @@ using namespace std;
 
 string int_to_string(int);
 
-
+void print_map_table(map_table &);
 
 #endif /* Small_Funs_hpp */
