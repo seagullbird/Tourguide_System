@@ -10,7 +10,6 @@
 #include "sqlite3.h"
 #include "Database_Connection.hpp"
 #include "Small_Funs.hpp"
-
 using namespace std;
 
 int main(int argc, const char * argv[]) {

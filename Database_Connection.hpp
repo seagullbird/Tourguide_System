@@ -20,7 +20,6 @@ using namespace std;
 typedef map<string, string> map_row;
 typedef map<int , map_row> map_table;
 
-
 class result_obtainer {
 private:
     string pre_sql;
