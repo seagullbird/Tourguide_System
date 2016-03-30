@@ -10,7 +10,6 @@
 #include "Small_Funs.hpp"
 using namespace std;
 //目前功能：查询从start城市（大写全拼）到所有与之直接相连的城市，earliest_time（无冒号）之后价格最低(price)或者到达时间最早(time)的交通工具tool的所有信息
-/* 剩余工作：完成系统时间类 */
 /* Defination of class Result_Obtainer */
 result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
 {
@@ -70,10 +69,6 @@ void result_obtainer::Get_Result()
     sqlite3_close(db);
 }
 
-//result_obtainer::~result_obtainer()
-//{
-//    free(&this->Result_list);
-//}
 /* ----------------------------------- */
 
 int callback(void *map_ptr, int argc, char **argv, char ** azColName)

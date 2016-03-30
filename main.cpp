@@ -13,12 +13,11 @@
 #include "Strategy.hpp"
 using namespace std;
 
+/* 剩余工作：完成系统时间类 
+        将头文件合并为一个
+*/
+
 int main(int argc, const char * argv[]) {
-    
-//    result_obtainer ob("CHENGDU", 700, "PRICE");
-//    ob.Get_Result();
-//    print_map_table(ob.Result_list);
-    
     map_table route = simple_min_strategy("CHENGDU", "BEIJING", "PRICE");
     cout << "Final result:" << endl;
     print_map_table(route);

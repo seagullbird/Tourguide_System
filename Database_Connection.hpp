@@ -30,7 +30,6 @@ private:
 public:
     map_table Result_list;  
     result_obtainer(string, int, string, string);
-    //~result_obtainer();
     void Get_Result();
 };
 
