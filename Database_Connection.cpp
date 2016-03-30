@@ -11,7 +11,6 @@
 using namespace std;
 //目前功能：查询从start城市（大写全拼）到所有与之直接相连的城市，earliest_time（无冒号）之后价格最低(price)或者到达时间最早(time)的交通工具tool的所有信息
 /* 剩余工作：完成系统时间类 */
-map_row *add_map_row;
 /* Defination of class Result_Obtainer */
 result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
 {
@@ -19,7 +18,7 @@ result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
     this->start = st;
     this->earliest_time = e_t;
     this->tool = tl;
-    if (choice == "price") {
+    if (choice == "PRICE") {
         this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, ARRIVAL_TIME, DURATION, MIN(PRICE) AS PRICE "
         "FROM " + tool + "_INFO "
         "WHERE START = '" + start + "' "
@@ -28,7 +27,7 @@ result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
         "WHERE DEPARTURE_TIME > " + int_to_string(earliest_time) + ") "
         "GROUP BY END; ";
     }
-    else if(choice == "time")
+    else if(choice == "ARRIVAL_TIME")
     {
         this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, MIN(ARRIVAL_TIME) AS ARRIVAL_TIME, DURATION, PRICE "
         "FROM " + tool + "_INFO "
@@ -40,7 +39,7 @@ result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
     }
     else
     {
-        cout << "You have to choose between 'time' and 'price'!" << endl;
+        cout << "You have to choose between 'PRICE' and 'ARRIVAL_TIME'!" << endl;
         exit(0);
     }
 }
@@ -68,20 +67,22 @@ void result_obtainer::Get_Result()
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     }
-
     sqlite3_close(db);
 }
+
+//result_obtainer::~result_obtainer()
+//{
+//    free(&this->Result_list);
+//}
 /* ----------------------------------- */
 
-int callback(void *map_ptr, int argc, char **argv, char ** azColName){
-    //This function returns only one row of records each time itazColName is called
-    
+int callback(void *map_ptr, int argc, char **argv, char ** azColName)
+{
+    //This function returns only one row of records each time it is called
     static int Row_num = 1;
-    map_table *temp_map_ptr = (map_table *)map_ptr;
-    
     for(int i=0; i<argc; i++) {
         string temp_id(azColName[i]), temp_name(argv[i]);
-        (*temp_map_ptr)[Row_num][temp_id] = temp_name;
+        (*(map_table *)map_ptr)[Row_num][temp_id] = temp_name;
     }
     Row_num++;
     return 0;

@@ -29,12 +29,11 @@ private:
     
 public:
     map_table Result_list;  
-    result_obtainer(string, int, string, string tl = "ALL");
+    result_obtainer(string, int, string, string);
+    //~result_obtainer();
     void Get_Result();
 };
 
 
 int callback(void *, int, char **, char **);
-
-
 #endif /* Database_Connection_hpp */
