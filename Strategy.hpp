@@ -16,5 +16,5 @@
 #define city_number 10
 using namespace std;
 
-map_table simple_min_strategy(string start, string end, string strategy, string method = "ALL");
+map_table simple_min_strategy(string start, string end, string strategy, string method = "ALL", int price_rate = 0, int time_rate = 0);
 #endif /* Strategy_hpp */

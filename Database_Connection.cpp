@@ -11,7 +11,7 @@
 using namespace std;
 //目前功能：查询从start城市（大写全拼）到所有与之直接相连的城市，earliest_time（无冒号）之后价格最低(price)或者到达时间最早(time)的交通工具tool的所有信息
 /* Defination of class Result_Obtainer */
-result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
+result_obtainer::result_obtainer(string st, int e_t, string choice, string tl, string LAST_AT, int price_rate, int time_rate)
 {
     //构造函数
     this->start = st;
@@ -35,6 +35,18 @@ result_obtainer::result_obtainer(string st, int e_t, string choice, string tl)
         "(SELECT NUMBER FROM " + tool + "_INFO "
         "WHERE DEPARTURE_TIME > " + int_to_string(earliest_time) + ") "
         "GROUP BY END; ";
+    }
+    else if(choice == "MIX")
+    {
+        this->pre_sql = "SELECT NUMBER, START, END, METHOD, DEPARTURE_TIME, ARRIVAL_TIME, DURATION, PRICE, "
+        "MIN(PRICE*" + int_to_string(price_rate) + " + (ARRIVAL_TIME - " + LAST_AT + ")*" + int_to_string(time_rate) + ") AS MIX"
+        "FROM " + tool + "_INFO "
+        "WHERE START = '" + start + "' "
+        "AND NUMBER IN "
+        "(SELECT NUMBER FROM " + tool + "_INFO "
+        "WHERE DEPARTURE_TIME > " + int_to_string(earliest_time) + ") "
+        "GROUP BY END; ";
+        
     }
     else
     {

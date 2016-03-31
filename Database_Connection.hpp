@@ -29,7 +29,7 @@ private:
     
 public:
     map_table Result_list;  
-    result_obtainer(string, int, string, string);
+    result_obtainer(string, int, string, string, string LAST_AT = "0", int price_rate = 0, int time_rate = 0);
     void Get_Result();
 };
 
