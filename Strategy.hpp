@@ -15,6 +15,11 @@
 #define INFI 99999999
 #define city_number 10
 using namespace std;
+typedef struct
+{
+    int total_time;
+    int total_price;
+}total_weight, *twptr;
 
-map_table simple_min_strategy(string start, string end, string strategy, string method = "ALL", int price_rate = 0, int time_rate = 0);
+map_table simple_min_strategy(string start, string end, string strategy, twptr, string method = "ALL", int price_rate = 0, int time_rate = 0);
 #endif /* Strategy_hpp */

@@ -10,7 +10,7 @@
 #include "Database_Connection.hpp"
 #include "Small_Funs.hpp"
 //记得改city_number
-map_table simple_min_strategy(string start, string end, string strategy, string method, int price_rate, int time_rate)
+map_table simple_min_strategy(string start, string end, string strategy, twptr total_weightptr, string method, int price_rate, int time_rate)
 {
     int min;
     //初始earliest_time为系统当前时间，现在先设为7:00
@@ -26,7 +26,9 @@ map_table simple_min_strategy(string start, string end, string strategy, string 
             map<string, int> final;
             typedef struct route_to_start
             {
-                int total;      //保存该城市目前到起点关键值的和（价格和/时间和）
+                int total;                                          //保存该城市目前到起点关键值的和（价格和/时间和/混合和）
+                int total_time;                                     //保存价格和
+                int total_price;                                    //保存时间和
                 map_row one_arc;
                 struct route_to_start *nextptr;
             }rts, *rtsptr;
@@ -38,6 +40,7 @@ map_table simple_min_strategy(string start, string end, string strategy, string 
             {
                 D[x.second["END"]] = new rts;
                 D[x.second["END"]]->total = atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX"? 0 : earliest_time);
+                D[x.second["END"]]->total_price = atoi(x.second["PRICE"].c_str());
                 D[x.second["END"]]->one_arc = x.second;
                 D[x.second["END"]]->nextptr = nullptr;
             }
@@ -73,15 +76,17 @@ map_table simple_min_strategy(string start, string end, string strategy, string 
                     if (!D[x.second["END"]]) {
                         //如果D里面没有这个城市将这个城市加入D，路径就是这个城市到temp_city到start
                         D[x.second["END"]] = new rts;
-                        D[x.second["END"]]->total = temp_rtsptr->total + atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX"? 0 : atoi(temp_rtsptr->one_arc["ARRIVAL_TIME"].c_str()));
+                        D[x.second["END"]]->total = temp_rtsptr->total + atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX" ? 0 : atoi(temp_rtsptr->one_arc["ARRIVAL_TIME"].c_str()));
+                        D[x.second["END"]]->total_price = temp_rtsptr->total + atoi(x.second[strategy].c_str());
                         D[x.second["END"]]->one_arc = x.second;
                         D[x.second["END"]]->nextptr = temp_rtsptr;
                     }
                     else
                     {
                         //如果D里面有这个城市则更新之
-                        if (!final[x.second["END"]] && min + atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX"? 0 : atoi(temp_rtsptr->one_arc["ARRIVAL_TIME"].c_str())) < D[x.second["END"]]->total) {
-                            D[x.second["END"]]->total = min + atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX"? 0 : atoi(temp_rtsptr->one_arc["ARRIVAL_TIME"].c_str()));
+                        if (!final[x.second["END"]] && min + atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX" ? 0 : atoi(temp_rtsptr->one_arc["ARRIVAL_TIME"].c_str())) < D[x.second["END"]]->total) {
+                            D[x.second["END"]]->total = min + atoi(x.second[strategy].c_str()) - ( strategy == "PRICE" || strategy == "MIX" ? 0 : atoi(temp_rtsptr->one_arc["ARRIVAL_TIME"].c_str()));
+                            D[x.second["END"]]->total_price = min + atoi(x.second[strategy].c_str());
                             D[x.second["END"]]->one_arc = x.second;
                             D[x.second["END"]]->nextptr = temp_rtsptr;
                         }
@@ -90,13 +95,19 @@ map_table simple_min_strategy(string start, string end, string strategy, string 
                 clear_map_table(from_this_city.Result_list);
             }
             if (D[end]) {
+                int DEPA_TIME, ARRI_TIME;
+                ARRI_TIME = atoi(D[end]->one_arc["ARRIVAL_TIME"].c_str());
                 rtsptr temp_ptr = D[end];
                 int i = 1;
                 while (temp_ptr != nullptr) {
                     route[i++] = temp_ptr->one_arc;
+                    if (temp_ptr->nextptr == nullptr) {
+                        DEPA_TIME = atoi(temp_ptr->one_arc["DEPARTURE_TIME"].c_str());
+                    }
                     temp_ptr = temp_ptr->nextptr;
                 }
-                //cout << "Total" << (strategy == "PRICE" ? " PRICE" : " TIME") << " == " << D[end]->total << endl;
+                total_weightptr->total_time = get_time(ARRI_TIME, DEPA_TIME);
+                total_weightptr->total_price = D[end]->total_price;
             }
             else
             {
