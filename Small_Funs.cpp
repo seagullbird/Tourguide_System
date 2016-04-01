@@ -83,7 +83,7 @@ int exist_in_db(string &city_name)
     sqlite3_step(pstmt);
     int count=sqlite3_column_int(pstmt,0);
     sqlite3_finalize(pstmt);
-    
+    sqlite3_close(db);
     if(count > 0)
         return 1;
     

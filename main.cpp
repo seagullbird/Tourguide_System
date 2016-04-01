@@ -14,9 +14,6 @@
 #include "System_Clock.hpp"
 using namespace std;
 
-/* 剩余工作：完成系统时间类 
-        将头文件合并为一个
-*/
 System_Clock sys_clock;
 
 int main(int argc, const char * argv[]) {
@@ -27,5 +24,15 @@ int main(int argc, const char * argv[]) {
     cout << "Total time: " << tw->total_time << endl;
     cout << "Total price: " << tw->total_price << endl;
     clear_map_table(route);
+    
+    string com;
+    cout << "Done?" << endl;
+    cin >> com;
+    while (com != "Y") {
+        cout << asctime(sys_clock.get_cur_system_time()) << endl;
+        cout << "Done?" << endl;
+        cin >> com;
+    }
+    reset_init_time(sys_clock.get_cur_system_time());
     return 0;
 }

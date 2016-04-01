@@ -10,7 +10,6 @@
 #define Small_Funs_hpp
 
 #include <iostream>
-#include <ctime>
 #include <string>
 #include <sstream>
 #include <cstring>
